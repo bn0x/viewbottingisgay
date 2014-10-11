@@ -35,26 +35,25 @@ int main(int argc, char *args[])
   CURL *curl;
   CURLcode res;
 
-  struct MemoryStruct chunk;
+  struct MemoryStruct access_token_data;
 
-  chunk.memory = malloc(1);  /* will be grown as needed by the realloc above */
-  chunk.size = 0;    /* no data at this point */
+  access_token_data.memory = malloc(1);  /* will be grown as needed by the realloc above */
+  access_token_data.size = 0;    /* no data at this point */
 
   printf("[+] Tested Stuff For: %s\n", args[1]);
 
   curl = curl_easy_init();
   if(curl) {
     char url[100];
-    char access_token_data[200];
     snprintf(url, 99, "http://api.twitch.tv/api/channels/%s/access_token", args[1]);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&chunk);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, (void *)&access_token_data);
     curl_easy_setopt(curl, CURLOPT_URL, url);
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     res = curl_easy_perform(curl);
     printf("[+] Got access_token data..\n");
     curl_easy_cleanup(curl);
-    printf("%s", chunk);
+    printf("%s", access_token_data);
   }
   return 0;
 }
